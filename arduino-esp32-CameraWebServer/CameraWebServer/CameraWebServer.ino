@@ -1,8 +1,8 @@
 #include "esp_camera.h"
-#include <WiFi.h>
+#include <WiFi.h>//esp32 library's wifi.h
 
 //
-// WARNING!!! Make sure that you have either selected ESP32 Wrover Module,
+// WARNING!!! Make sure that you have either selected ESP32 Wrover Minrodule,
 //            or another board which has PSRAM enabled
 //
 
@@ -11,8 +11,8 @@
 //#define CAMERA_MODEL_M5STACK_PSRAM
 #define CAMERA_MODEL_AI_THINKER
 
-const char* ssid = "abcd";
-const char* password = "qwertyui";
+const char* ssid = "INFINITUM430D_2.4";
+const char* password = "Y33kRq6cfN";
 
 
 #if defined(CAMERA_MODEL_WROVER_KIT)
