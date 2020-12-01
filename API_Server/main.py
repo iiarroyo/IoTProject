@@ -10,7 +10,7 @@ import os, sys, json, time
 
 app = Flask(__name__)
 socket = SocketIO(app)
-# run_with_ngrok(app)
+run_with_ngrok(app)
 
 
 @app.route('/')
@@ -49,7 +49,6 @@ def check_image(data):
 		opened = mqtt.open_door()
 	else:
 		alarm = mqtt.intruder()
-	# Actualice la aplicación del usuario
 	if opened:
 		#Chechar llamar funcion socket
 		pass
@@ -94,5 +93,6 @@ def change_cam_image(data):
 
 
 if __name__ == "__main__":
-	app.run(debug=True)
-	socket.run(app)
+    #	app.run(debug=True)
+    app.run()
+    socket.run(app, debug = True)
