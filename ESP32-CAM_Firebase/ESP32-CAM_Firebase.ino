@@ -24,6 +24,7 @@ String FIREBASE_AUTH = "oe9UjMp60tcEf6vhPX3eY5qek6wQbckemqY4tsJU";
 FirebaseData firebaseData;
 
 #include <WiFi.h>
+#include <HTTPClient.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "Base64.h"
@@ -133,8 +134,6 @@ void setup() {
   Firebase.setMaxErrorQueue(firebaseData, 30); 
   Firebase.enableClassicRequest(firebaseData, true);
   //FirebaseJson jsonData;
-
-  //jsonData.set( "{\"photo\":\"" + Photo2Base64() + "\"}");
   
   String jsonData = "{\"photo\":\"" + Photo2Base64() + "\"}";
   String photoPath = "/esp32-cam";
@@ -149,6 +148,18 @@ void setup() {
  
 void loop() { 
   delay(10000);
+  if(WiFi.status()==WL_CONNECTED)
+  {
+ 
+    HTTPClient client;
+
+    client.begin("http://127.0.0.1:5000/");
+    int httpCode = client.GET();
+    
+    Serial.println("http code:");
+    Serial.println(httpCode);
+    
+  }
 }
 
 String Photo2Base64() {
