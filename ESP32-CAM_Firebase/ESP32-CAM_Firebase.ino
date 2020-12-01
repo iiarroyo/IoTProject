@@ -157,7 +157,7 @@ void loop() {
     size_t aux =1;
     uint8_t* auxInt= new uint8_t(1);
     int httpCode = client.POST(auxInt, aux);
-    delay(1000);
+    delay(100000);
     
     
     Serial.println("http code:");
