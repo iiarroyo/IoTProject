@@ -23,6 +23,7 @@ const char* password =  "9FcmbyF5hR";
 
 
 
+
 //**************************************
 //*********** GLOBALES   ***************
 //**************************************
@@ -30,6 +31,7 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 char msg[25];
 long count=0;
+int LED =D1;
 
 
 //************************
@@ -41,6 +43,7 @@ void setup_wifi();
 
 void setup() {
   servo.attach(D4);
+  pinMode(LED,OUTPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
@@ -54,10 +57,9 @@ void loop() {
   }
 
   if (client.connected()){
-    String str = "La cuenta es -> " + String(count);
+    String str = "SEGUIMOS CONECTADOS";
     str.toCharArray(msg,25);
     client.publish(root_topic_publish,msg);
-    count++;
     delay(500);
   }
   client.loop();
@@ -146,14 +148,18 @@ void callback(char* topic, byte* payload, unsigned int length){
 if (incoming.indexOf("yes") != -1)  {
   servo.write(0); //Moving servo to 0 degree
   value=0;
+  
 }
 if (incoming.indexOf("no") != -1)  {  
   servo.write(90); //Moving servo to 90 degree
   value=90;
 }
-if (incoming.indexOf("Hola") != -1)  { 
+if (incoming.indexOf("led") != -1)  { 
   servo.write(0); //Moving servo to 180 degree
   value=180;
+  digitalWrite(LED,HIGH);
+  delay(2000);
+  digitalWrite(LED,LOW);
 } 
 
 }
