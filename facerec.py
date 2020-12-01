@@ -12,25 +12,17 @@ from numpy import asarray
 import base64
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate(
-'private/iotv2-a811e-firebase-adminsdk-lo9wt-1a8ea97452.json')
+cred = credentials.Certificate('private/iotv2-a811e-firebase-adminsdk-lo9wt-1a8ea97452.json')
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://iotv2-a811e.firebaseio.com/'
 })
 ref = db.reference('esp32-cam')
-
-# ref2 = ref.child('caca')
-# ref2.push({
-#     'author': 'gracehop',
-#     'title': 'Announcing COBOL, a New Programming Language'
-# })
+#dict = {u'-MNGnGyD8BkFvCkFFwql': {u'photo': u'data_quetal'}, u'-MNGnJOoFB5lR3arOSUV': {u'photo': u'data_hola'}}
 
 url_lists = list(range(10))
 
 dict = ref.get()
-#dict = {u'-MNGnGyD8BkFvCkFFwql': {u'photo': u'data_quetal'},
- # u'-MNGnJOoFB5lR3arOSUV': {u'photo': u'data_hola'}}
 for p_id, p_info in dict.items():
     for key in p_info:
 #        print(p_info[key])
@@ -39,6 +31,7 @@ for p_id, p_info in dict.items():
 
 url = url_lists[-1][23:] # last url from realtime database
 #LIMPIAR STRING
+# print(url)
 
 url = url.replace('%2B','+')
 url = url.replace('%2F','/')
