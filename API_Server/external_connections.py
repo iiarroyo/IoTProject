@@ -12,10 +12,10 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://iotv2-a811e.firebaseio.com/'
 })
 root_ref = db.reference('/')
-esp32_ref = db.reference('esp32-cam')
-known_people_ref = db.reference('personas_registradas')
-register_ref = db.reference('registro')
-door_opened_ref = db.reference('puerta_abierta')
+esp32_ref = root_ref.child('esp32-cam')
+known_people_ref = root_ref.child('personas_registradas')
+register_ref = root_ref.child('registro')
+door_opened_ref = root_ref.child('puerta_abierta')
 
 
 ## ESTADO DE LOS REGISTROS ------------
@@ -32,12 +32,13 @@ def set_register(known_boolean, person_id):
 	}
 	return register_ref.push(new_register)
 
-def get_knwon_people_names():
+def get_known_people_names():
 	query_set = known_people_ref.get()
 	return query_set.items()
 
 def set_known_people(name):
 	new_people = {'name': name}
+
 	return known_people_ref.push(new_people)
 
 def get_door_opened():
@@ -47,7 +48,7 @@ def get_door_opened():
 def set_door_opened():
 	new_door_opened = {
 		'hora':  str(datetime.now().time()),
-		'facha': date.today().strftime('%d/%m/%Y') 
+		'fecha': date.today().strftime('%d/%m/%Y')
 	}
 	return door_opened_ref.push(new_door_opened)
 
