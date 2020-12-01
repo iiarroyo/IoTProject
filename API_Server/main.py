@@ -1,16 +1,16 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask_ngrok import run_with_ngrok
 from flask_socketio import SocketIO, emit
 import external_connections as db
 import mqtt
-from reconocimiento_facial import decode_url, recognize_sample_face, face_rec
+# from reconocimiento_facial import decode_url, recognize_sample_face, face_rec
 
 import os, sys, json, time
 
 
 app = Flask(__name__)
 socket = SocketIO(app)
-# run_with_ngrok(app)
+run_with_ngrok(app)
 
 
 @app.route('/')
@@ -24,13 +24,15 @@ def index():
 	return render_template('index.html', data=context)
 
 
-@app.route('/recfacial', methods=['POST'])
-def check_image(data):
+@app.route('/recfacial', methods=['POST', 'GET'])
+def check_image():
+	print('Funcion reconocimiento facial: API servidor')
+	"""
 	# Que tome la ultima foto de firebase
 	video_bytes_url = db.get_last_video_url()
 	# Decode de base64
 	img = decode_url(video_bytes_url)
-	# Que le aplique reconocimeitno facial
+	# Que le aplique reconocimiento facial
 		## Obtener los nombre de las personas registradas en firebase
 	names = db.get_known_people_names()
 		## Encodear las imagenes de las personas conocidas con el dir de la img: '/isra.jpg'
@@ -38,6 +40,8 @@ def check_image(data):
 	known_encodings = [recognize_sample_face(dir_) for dir_ in known_imgs_dirs]
 		## Reconocer cara con la img desconocida y las conocidas
 	result = face_rec(img, known_encodings, names)
+	"""
+	result = ['Javier']
 	# Publique a traves de mqtt
 	open_door = False
 	person_name = result[0]
@@ -55,7 +59,9 @@ def check_image(data):
 		pass
 	# Actualice base de datos de firebase
 	db.set_register(open_door, person_name)
-	db.set_door_status(data['status'])
+
+	if request.method == 'GET':
+		return jsonify({})
 
 
 @app.route('/stats')
@@ -94,5 +100,5 @@ def change_cam_image(data):
 
 
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run()
 	socket.run(app)

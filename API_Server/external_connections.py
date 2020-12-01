@@ -84,18 +84,22 @@ def get_times_opened():
 
 def times_known_faces():
 	counter = 0
+	"""
 	for id, data in get_registers():
 		for key in data:
 			if data[key]['registrado'] == True:
 				counter += 1
+	"""
 	return counter
 
 def times_unknown_faces():
 	counter = 0
+	"""
 	for id, data in get_registers():
 		for key in data:
 			if data[key]['registrado'] == False:
 				counter += 1
+	"""
 	return counter
 
 
