@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		alarm_checkbox.checked = data['alarm_status'];
 	});
 
+	// Image container listener
 	socket.on('announce image', data => {
 		const img = document.querySelector('img');
 		img.src = data['img_src'];
@@ -294,5 +295,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 #cam-title {
 	margin: .5em 1em;
+}
+
+#image {
+	border-radius: 10px;
+	margin: 0 2em;
 }
 </style>

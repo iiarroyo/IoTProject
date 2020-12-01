@@ -5,6 +5,12 @@ import requests
 from io import BytesIO
 from numpy import asarray
 import base64
+import os
+
+
+DETECTED_IMG_DIR = 'static/detected_person_img'
+KNWON_IMG_DIR = 'static/knwon_faces_img'
+
 
 # Decode images from URL safe base64
 def decode_url(url):
@@ -43,11 +49,12 @@ def face_rec(img_arr, known_face_encodings, known_face_names):
 
 		# Draw a box around the face using the Pillow module
 		draw.rectangle(((left, top), (right, bottom)), outline=(48, 63, 159))
-		# Draw a label with a name below the face
 		text_width, text_height = draw.textsize(name)
 		draw.rectangle(((left, bottom - text_height - 10), (right, bottom)), fill=(48, 63, 159), outline=(48, 63, 159))
 		draw.text((left + 6, bottom - text_height - 5), name, fill=(255, 255, 255, 0))
-
+	
+	# Save image
+	pil_image.save(os.path.join(DETECTED_IMG_DIR, f'{names[0]}_detected.jpg'))
 	# Remove the drawing library from memory as per the Pillow docs
 	del draw
 

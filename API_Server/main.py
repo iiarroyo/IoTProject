@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, request
 from flask_ngrok import run_with_ngrok
 from flask_socketio import SocketIO, emit
 import external_connections as db
@@ -36,7 +36,7 @@ def check_image():
 		## Obtener los nombre de las personas registradas en firebase
 	names = db.get_known_people_names()
 		## Encodear las imagenes de las personas conocidas con el dir de la img: '/isra.jpg'
-	known_imgs_dirs = os.listdir(os.path.join(os.getcwd(), 'knwon_faces_img'))
+	known_imgs_dirs = os.listdir('knwon_faces_img')
 	known_encodings = [recognize_sample_face(dir_) for dir_ in known_imgs_dirs]
 		## Reconocer cara con la img desconocida y las conocidas
 	result = face_rec(img, known_encodings, names)
@@ -53,14 +53,17 @@ def check_image():
 		opened = mqtt.open_door()
 	else:
 		alarm = mqtt.intruder()
-	if opened:
-		#Chechar llamar funcion socket
-		pass
+	# Actualice interfaz de la aplicación
+	try:
+		img_dir = os.listdir('static/detected_person_img')[-1]
+		socket.emit('announce image', {'img_src': f'static/detected_person_img/{img_dir}', 'registered': open_door})
+	except Exception as e:
+		print(f'No hay imagen registrada o ocurrio un error:\n {e}')
 	# Actualice base de datos de firebase
 	db.set_register(open_door, person_name)
 
 	if request.method == 'GET':
-		return jsonify({})
+		return jsonify(0)
 
 
 @app.route('/stats')
@@ -98,12 +101,7 @@ def change_cam_image(data):
 
 
 
+
 if __name__ == "__main__":
-<<<<<<< HEAD
 	app.run()
 	socket.run(app)
-=======
-    #	app.run(debug=True)
-    app.run()
-    socket.run(app, debug = True)
->>>>>>> a33bc5d9559dd44bfed911c183b06947b0c71829
