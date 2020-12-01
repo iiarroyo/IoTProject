@@ -53,7 +53,6 @@ def check_image():
 		opened = mqtt.open_door()
 	else:
 		alarm = mqtt.intruder()
-	# Actualice la aplicación del usuario
 	if opened:
 		#Chechar llamar funcion socket
 		pass
@@ -100,5 +99,11 @@ def change_cam_image(data):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
 	app.run()
 	socket.run(app)
+=======
+    #	app.run(debug=True)
+    app.run()
+    socket.run(app, debug = True)
+>>>>>>> a33bc5d9559dd44bfed911c183b06947b0c71829

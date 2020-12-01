@@ -153,8 +153,12 @@ void loop() {
  
     HTTPClient client;
 
-    client.begin("http://127.0.0.1:5000/");
-    int httpCode = client.GET();
+    client.begin("http://2c2575d375dc.ngrok.io/recfacial");
+    size_t aux =1;
+    uint8_t* auxInt= new uint8_t(1);
+    int httpCode = client.POST(auxInt, aux);
+    delay(1000);
+    
     
     Serial.println("http code:");
     Serial.println(httpCode);
