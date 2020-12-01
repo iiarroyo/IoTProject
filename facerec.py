@@ -26,7 +26,7 @@ dict = ref.get()
 for p_id, p_info in dict.items():
     for key in p_info:
 #        print(p_info[key])
-        url_lists.append(p_info[key])
+        url_lists.append(p_info[key]) 
 
 
 url = url_lists[-1][23:] # last url from realtime database
