@@ -1,10 +1,11 @@
 from flask import Flask, render_template
 from flask_ngrok import run_with_ngrok
 from flask_socketio import SocketIO, emit
-from external_connections import *
-# from reconocimiento_facial import decode_url, recognize_sample_face, face_rec
+import external_connections as db
+import mqtt
+from reconocimiento_facial import decode_url, recognize_sample_face, face_rec
 
-import os, sys, json
+import os, sys, json, time
 
 
 app = Flask(__name__)
@@ -15,21 +16,46 @@ socket = SocketIO(app)
 @app.route('/')
 def index():
 	context = {}
-	context['door_status'] = get_door_status()
-	context['alarm_status'] = get_alarm_status()
-	context['times_opened'] = get_times_opened()
-	context['times_known_faces'] = times_known_faces()
-	context['times_unknown_faces'] = times_unknown_faces()
+	context['door_status'] = db.get_door_status()
+	context['alarm_status'] = db.get_alarm_status()
+	context['times_opened'] = db.get_times_opened()
+	context['times_known_faces'] = db.times_known_faces()
+	context['times_unknown_faces'] = db.times_unknown_faces()
 	return render_template('index.html', data=context)
 
 
 @app.route('/recfacial', methods=['POST'])
 def check_image(data):
-	# Encode known faces
-
-	video_bytes_url = get_last_video_url()
-
-	set_door_status(data['status'])
+	# Que tome la ultima foto de firebase
+	video_bytes_url = db.get_last_video_url()
+	# Decode de base64
+	img = decode_url(video_bytes_url)
+	# Que le aplique reconocimeitno facial
+		## Obtener los nombre de las personas registradas en firebase
+	names = db.get_known_people_names()
+		## Encodear las imagenes de las personas conocidas con el dir de la img: '/isra.jpg'
+	known_imgs_dirs = os.listdir(os.path.join(os.getcwd(), 'knwon_faces_img'))
+	known_encodings = [recognize_sample_face(dir_) for dir_ in known_imgs_dirs]
+		## Reconocer cara con la img desconocida y las conocidas
+	result = face_rec(img, known_encodings, names)
+	# Publique a traves de mqtt
+	open_door = False
+	person_name = result[0]
+	for name in result:
+		if name != 'Posible intruso':
+			open_door = True
+			person_name = ''
+	if open_door:
+		opened = mqtt.open_door()
+	else:
+		alarm = mqtt.intruder()
+	# Actualice la aplicación del usuario
+	if opened:
+		#Chechar llamar funcion socket
+		pass
+	# Actualice base de datos de firebase
+	db.set_register(open_door, person_name)
+	db.set_door_status(data['status'])
 
 
 @app.route('/stats')
@@ -45,17 +71,17 @@ def stats():
 @socket.on('change door')
 def open_close_door(data):
 	context = {'door_status': data['door_status']}
-	set_door_status(data['door_status'])
-	context['times_opened'] = get_times_opened()
-	context['times_known_faces'] = times_known_faces()
-	context['times_unknown_faces'] = times_unknown_faces()
+	db.set_door_status(data['door_status'])
+	context['times_opened'] = db.get_times_opened()
+	context['times_known_faces'] = db.times_known_faces()
+	context['times_unknown_faces'] = db.times_unknown_faces()
 	emit('announce door', context, broadcast=True)
 
 
 @socket.on('change alarm')
 def change_buzzer(data):
 	context = {'alarm_status': data['alarm_status']}
-	set_alarm_status(data['alarm_status'])
+	db.set_alarm_status(data['alarm_status'])
 	emit('announce alarm', context, broadcast=True)
 
 

@@ -55,7 +55,6 @@ unknown_image=asarray(image)# de URL
 isidra_image = face_recognition.load_image_file("knownImages/Isidra.jpg")
 isidra_face_encoding = face_recognition.face_encodings(isidra_image)[0]
 
-
 # Load a second sample picture and learn how to recognize it.
 macaria_image = face_recognition.load_image_file("knownImages/Macaria.jpg")
 macaria_face_encoding = face_recognition.face_encodings(macaria_image)[0]

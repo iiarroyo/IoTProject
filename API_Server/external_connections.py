@@ -35,14 +35,10 @@ def set_register(known_boolean, person_id):
 	return register_ref.push(new_register)
 
 def get_known_people_names():
-	query_set = known_people_ref.get()
-	if not query_set:
-		return []
-	return query_set.items()
+	return known_people_ref.get()
 
 def set_known_people(name):
 	new_people = {'name': name}
-
 	return known_people_ref.push(new_people)
 
 def get_door_opened():
@@ -121,3 +117,9 @@ def get_last_video_url():
 	url = url.replace('%3D','=')
 
 	return url
+
+
+
+if __name__ == "__main__":
+	set_known_people('Javier')
+	print(get_known_people_names())
