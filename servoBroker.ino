@@ -147,7 +147,7 @@ if (incoming.indexOf("yes") != -1)  {
   servo.write(0); //Moving servo to 0 degree
   value=0;
 }
-if (incoming.indexOf("No") != -1)  {  
+if (incoming.indexOf("no") != -1)  {  
   servo.write(90); //Moving servo to 90 degree
   value=90;
 }
