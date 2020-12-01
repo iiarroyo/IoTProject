@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit
 from external_connections import *
 # from reconocimiento_facial import decode_url, recognize_sample_face, face_rec
 
-import os, sys
+import os, sys, json
 
 
 app = Flask(__name__)
@@ -34,8 +34,12 @@ def check_image(data):
 
 @app.route('/stats')
 def stats():
-	chart_settings = {}
-	return render_template('stats.html', chart_settings=chart_settings)
+	chart1 = {'known': 13, 'unknown': 6}
+	chart2 = [{'name': 'Israel', 'y': 6},
+			{'name': 'Javier', 'y': 5},
+			{'name': 'Gerardo', 'y': 8},
+			{'name': 'Luis', 'y': 6}]
+	return render_template('stats.html', chart1=chart1, chart2=json.dumps(chart2))
 
 
 @socket.on('change door')
@@ -64,5 +68,5 @@ def change_cam_image(data):
 
 
 if __name__ == "__main__":
-	app.run()
+	app.run(debug=True)
 	socket.run(app)

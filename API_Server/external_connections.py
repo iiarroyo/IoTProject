@@ -21,6 +21,8 @@ door_opened_ref = root_ref.child('puerta_abierta')
 ## ESTADO DE LOS REGISTROS ------------
 def get_registers():
 	query_set = register_ref.get()
+	if not query_set:
+		return []
 	return query_set.items()
 
 def set_register(known_boolean, person_id):
@@ -34,6 +36,8 @@ def set_register(known_boolean, person_id):
 
 def get_known_people_names():
 	query_set = known_people_ref.get()
+	if not query_set:
+		return []
 	return query_set.items()
 
 def set_known_people(name):
@@ -43,6 +47,8 @@ def set_known_people(name):
 
 def get_door_opened():
 	query_set = door_opened_ref.get()
+	if not query_set:
+		return []
 	return query_set.items()
 
 def set_door_opened():
@@ -75,7 +81,10 @@ def set_alarm_status(status):
 
 ## ESTADO DE LAS STATS --------------
 def get_times_opened():
-	return len(get_door_opened())
+	query_set = get_door_opened()
+	if not query_set:
+		return 0
+	return len(query_set)
 
 def times_known_faces():
 	counter = 0
