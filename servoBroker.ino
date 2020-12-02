@@ -154,9 +154,9 @@ if (incoming.indexOf("no") != -1)  {
   servo.write(90); //Moving servo to 90 degree
   value=90;
 }
-if (incoming.indexOf("led") != -1)  { 
-  servo.write(0); //Moving servo to 180 degree
-  value=180;
+if (incoming.indexOf("intruder") != -1)  { 
+  servo.write(90); //Moving servo to 180 degree
+  value=90;
   digitalWrite(LED,HIGH);
   delay(2000);
   digitalWrite(LED,LOW);
