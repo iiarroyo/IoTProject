@@ -60,7 +60,7 @@
 						<td>Puerta principal abierta</td>
 						<td>
 							<label class="container">
-								<input type="checkbox" checked="checked" id="main-door-check">
+								<input type="checkbox" id="main-door-check">
 								<span class="checkmark"></span>
 							</label>
 						</td>
@@ -95,19 +95,19 @@
 						<tr>
 							<td><span># veces que se ha abierto la puerta</span></td>
 							<td>
-								<span id="puerta-abierta">0</span>
+								<span id="puerta-abierta">{{ data.door_opened }}</span>
 							</td>
 						</tr>
 						<tr>
 							<td><span># veces que han entrado registrados</span></td>
 							<td>
-								<span id="cara-reconocida">0</span>
+								<span id="cara-reconocida">{{ data.face_recogniced }}</span>
 							</td>
 						</tr>
 						<tr>
 							<td><span># veces que se detecta desconocidos</span></td>
 							<td>
-								<span id="cara-desconocida">0</span>
+								<span id="cara-desconocida">{{ data.face_unrecogniced }}</span>
 							</td>
 						</tr>
 					</tbody>
@@ -121,7 +121,6 @@
 				<h2 id="cam-title"><strong>Cámara de la puerta principal</strong></h2>
 				<p class="cam-message"></p>
 				<img src="" alt="" srcset="" id="image" style="width:80%">
-				<p id="cam-msg"></p>
 				<div id="register-img-form-container">
 					<form action="{{ url_for('register_user') }}" method="post">
 						<input type="text" name="name" id="name" class="form-control" 
@@ -151,19 +150,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	// When socket connected
 	socket.on('connect', () => {
 		console.log(`Connected to socket ` + location.protocol + '//' + document.domain + ':' + location.port);
-		// When Door is checked
-		const door_checkbox = document.querySelector('#main-door-check');
-		door_checkbox.addEventListener('change', () => {
-			const status = door_checkbox.checked;
-			socket.emit('change door', {'door_status': status});
-		});
+	});
 
-		// When Alarm is checked
-		const alarm_checkbox = document.querySelector('#alarm-check');
+	// When Door is checked
+	const door_checkbox = document.querySelector('#main-door-check');
+		door_checkbox.addEventListener('change', () => {
+		const status = door_checkbox.checked;
+		socket.emit('open close door', { 'door_status': status });
+	});
+
+	// When Alarm is checked
+	const alarm_checkbox = document.querySelector('#alarm-check');
 		alarm_checkbox.addEventListener('change', () => {
-			const status = alarm_checkbox.checked;
-			socket.emit('change alarm', {'alarm_status': status});
-		});
+		const status = alarm_checkbox.checked;
+		socket.emit('change alarm', { 'alarm_status': status });
 	});
 
 	// Door Checked listener
@@ -194,10 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log(data['registered']);
 		console.log(typeof(data['registered']));
 		if (!data['registered']){
-			document.querySelector('#cam-msg').innerHTML = '';
 			document.querySelector('#register-img-form-container').style.display = "block";
-		} else {
-			document.querySelector('#cam-msg').innerHTML = 'Se ha registrado que ' + data['person'] + ' ha entrado.	';
 		}
 	});
 	
