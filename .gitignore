@@ -1,3 +1,5 @@
 *.DS_Store
 /private
 /face_recognition
+/testUnknownImages
+*.jpg
